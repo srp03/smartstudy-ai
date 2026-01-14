@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Health Assistant - Hackathon MVP
 
 A fully functional health management web application built with modern web technologies, featuring AI-powered diet and exercise recommendations, health profile management, and secure medical report storage.
@@ -322,3 +323,7 @@ Built with:
 **Happy Hacking! 🎉**
 
 For questions or issues, check the browser console for error messages and ensure all Firebase services are properly configured.
+=======
+# smartstudy-ai
+AI-powered study planning and productivity platform for engineering students using Google Gemini and Firebase.
+>>>>>>> e35e8dbe315c30c5b7aa2d38ccc0b40620f88c66
