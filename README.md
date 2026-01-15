@@ -151,41 +151,86 @@ service firebase.storage {
 
 ## 🚀 Running the Application
 
-### Option 1: Local Server (Recommended)
+### Development Setup
 
-1. **Using Python** (if installed):
+1. **Install dependencies** (optional, for development tools):
    ```bash
-   # Python 3
-   python -m http.server 8000
-   
-   # Python 2
-   python -m SimpleHTTPServer 8000
+   npm install
    ```
 
-2. **Using Node.js** (if installed):
+2. **Set up configuration**:
    ```bash
-   npx http-server -p 8000
+   # Option A: Use the automated setup script
+   npm run setup
+
+   # Option B: Manual setup
+   # Create .env file with your API keys (see .env.example)
+   # Run: npm run setup
    ```
 
-3. **Using VS Code Live Server**:
-   - Install "Live Server" extension
-   - Right-click on `index.html` → "Open with Live Server"
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
 
-4. Open browser: `http://localhost:8000`
+4. Open browser: `http://localhost:3000`
 
-### Option 2: Firebase Hosting
+### Alternative Local Development
 
-1. Install Firebase CLI:
+**Using Python** (if installed):
+```bash
+# Python 3
+python -m http.server 8000
+
+# Python 2
+python -m SimpleHTTPServer 8000
+```
+
+**Using VS Code Live Server**:
+- Install "Live Server" extension
+- Right-click on `index.html` → "Open with Live Server"
+
+## 🌐 Deployment
+
+### Environment Variables for Production
+
+For production deployment, set these environment variables on your hosting platform:
+
+```bash
+GEMINI_API_KEY=your_actual_gemini_api_key
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+FIREBASE_APP_ID=your_app_id
+```
+
+### Firebase Hosting Deployment
+
+1. **Install Firebase CLI**:
    ```bash
    npm install -g firebase-tools
    ```
 
-2. Login to Firebase:
+2. **Login to Firebase**:
    ```bash
    firebase login
    ```
 
-3. Initialize hosting:
+3. **Set environment variables**:
+   ```bash
+   firebase functions:config:set \
+     app.gemini_key="your_gemini_api_key" \
+     app.firebase.api_key="your_firebase_api_key" \
+     app.firebase.auth_domain="your_project.firebaseapp.com" \
+     app.firebase.project_id="your_project_id" \
+     app.firebase.storage_bucket="your_project.appspot.com" \
+     app.firebase.messaging_sender_id="your_sender_id" \
+     app.firebase.app_id="your_app_id"
+   ```
+
+4. **Initialize hosting**:
    ```bash
    firebase init hosting
    ```
@@ -194,10 +239,105 @@ service firebase.storage {
    - Configure as single-page app: `No`
    - Set up automatic builds: `No`
 
-4. Deploy:
+5. **Deploy**:
    ```bash
    firebase deploy --only hosting
    ```
+
+### Vercel Deployment
+
+1. **Install Vercel CLI**:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy**:
+   ```bash
+   vercel
+   ```
+
+3. **Set environment variables** in Vercel dashboard:
+   - Go to your project settings
+   - Add the environment variables listed above
+
+### Netlify Deployment
+
+1. **Drag & drop** your project folder to [Netlify](https://app.netlify.com/drop)
+
+2. **Or use Netlify CLI**:
+   ```bash
+   npm install -g netlify-cli
+   netlify deploy --prod --dir=.
+   ```
+
+3. **Set environment variables** in Netlify dashboard:
+   - Go to Site settings → Environment variables
+   - Add the environment variables listed above
+
+### GitHub Pages (Limited)
+
+⚠️ **Note**: GitHub Pages doesn't support server-side environment variables. For demo purposes only:
+
+1. **Create a public config** (not recommended for production):
+   ```javascript
+   // Create js/public-config.js (will be committed)
+   window.GEMINI_API_KEY = "your_api_key"; // ⚠️ PUBLIC!
+   window.FIREBASE_API_KEY = "your_firebase_key"; // ⚠️ PUBLIC!
+   // ... etc
+   ```
+
+2. **Deploy using GitHub Actions** or manually upload files.
+
+## ✅ Pre-Deployment Checklist
+
+Before deploying to production, ensure:
+
+### 🔧 Development Setup
+- [ ] Run `npm run setup` to generate `js/secure-config.js`
+- [ ] Fill in actual API keys in `js/secure-config.js`
+- [ ] Test locally with `npm run dev`
+- [ ] Verify all features work (login, diet plans, exercise plans, reports)
+
+### 🔒 Security Check
+- [ ] `js/secure-config.js` is in `.gitignore`
+- [ ] No hardcoded API keys in committed files
+- [ ] Firebase service account keys are secure
+- [ ] Environment variables are properly configured
+
+### 🌐 Production Deployment
+- [ ] Choose hosting platform (Firebase, Vercel, Netlify)
+- [ ] Set all required environment variables on hosting platform
+- [ ] For static hosts: Run `npm run build` and deploy `./dist`
+- [ ] Test deployed application functionality
+- [ ] Verify API calls work in production
+
+### 🚀 Go-Live Verification
+- [ ] User registration/login works
+- [ ] AI diet plan generation functions
+- [ ] AI exercise plan generation functions
+- [ ] Medical report upload/analysis works
+- [ ] All Firebase operations work
+- [ ] No console errors in production
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**"Configuration validation failed"**
+- Ensure all required environment variables are set
+- Check that `js/config.js` loads before other scripts
+
+**"Firebase SDK not found"**
+- Verify Firebase CDN scripts are included in HTML
+- Check script loading order
+
+**API calls failing**
+- Verify API keys are correct
+- Check browser console for CORS or authentication errors
+
+**Build fails**
+- Ensure all environment variables are set before running `npm run build`
+- Check that Node.js version is compatible
 
 5. Your app will be live at: `https://YOUR_PROJECT_ID.web.app`
 

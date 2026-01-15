@@ -1,60 +1,189 @@
+/**
+ * server.js - Smart Health Assistant Backend Server
+ *
+ * ARCHITECTURE:
+ * - Express.js server for API endpoints
+ * - Google Drive integration for file uploads
+ * - Firebase service for frontend (separate project)
+ * - Secure credential separation maintained
+ */
+
 import express from 'express';
 import multer from 'multer';
-import { google } from 'googleapis';
 import cors from 'cors';
-import fs from 'fs';
+import { uploadFileToDrive, testDriveConnection } from './driveService.js';
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
 app.use(cors());
-const upload = multer({ storage: multer.memoryStorage() });
+app.use(express.json());
 
-// Load service account credentials
-const SERVICE_ACCOUNT = JSON.parse(
-  fs.readFileSync('./service-account.json', 'utf8')
-);
+// Configure multer for memory storage (no temp files)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow common medical document formats
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
 
-const DRIVE_FOLDER_ID = "1hwjnawvbkomdWPZf_59cWlTk1qQ_8miG"; // YOUR Drive Folder ID
-
-const auth = new google.auth.GoogleAuth({
-  credentials: SERVICE_ACCOUNT,
-  scopes: ['https://www.googleapis.com/auth/drive']
-});
-
-const drive = google.drive({ version: 'v3', auth });
-
-// Upload file endpoint
-app.post('/upload', upload.single('file'), async (req, res) => {
-  try {
-    const { originalname, buffer, mimetype } = req.file;
-
-    const response = await drive.files.create({
-      requestBody: {
-        name: originalname,
-        parents: [DRIVE_FOLDER_ID],
-      },
-      media: {
-        mimeType: mimetype,
-        body: buffer
-      }
-    });
-
-    // Make file public
-    await drive.permissions.create({
-      fileId: response.data.id,
-      requestBody: {
-        role: 'reader',
-        type: 'anyone'
-      }
-    });
-
-    const downloadURL = `https://drive.google.com/uc?id=${response.data.id}&export=download`;
-
-    res.status(200).json({ success: true, downloadURL });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: err.toString() });
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF, images, and documents allowed.'), false);
+    }
   }
 });
 
-app.listen(3000, () => console.log('Drive upload server running on port 3000'));
+// ==========================================
+// API ENDPOINTS
+// ==========================================
+
+/**
+ * POST /api/upload-report
+ * Upload medical report to Google Drive
+ * Returns public download link
+ */
+app.post('/api/upload-report', upload.single('file'), async (req, res) => {
+  try {
+    console.log('📥 Received file upload request');
+
+    // Validate file exists
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'No file provided'
+      });
+    }
+
+    const { originalname, buffer, mimetype, size } = req.file;
+
+    console.log(`📄 Processing: ${originalname} (${(size / 1024).toFixed(1)} KB)`);
+
+    // Upload to Google Drive
+    const result = await uploadFileToDrive(buffer, originalname, mimetype);
+
+    console.log('✅ Upload completed successfully');
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: 'Medical report uploaded successfully',
+      data: {
+        fileId: result.fileId,
+        fileName: result.fileName,
+        downloadURL: result.downloadURL,
+        viewURL: result.viewURL
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Upload failed:', error.message);
+
+    // Return appropriate error response
+    const statusCode = error.message.includes('permission') ? 403 :
+                      error.message.includes('auth') ? 401 : 500;
+
+    res.status(statusCode).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/health
+ * Health check endpoint
+ */
+app.get('/api/health', async (req, res) => {
+  try {
+    // Test Google Drive connection
+    const driveTest = await testDriveConnection();
+
+    res.status(200).json({
+      success: true,
+      message: 'Backend server is healthy',
+      services: {
+        googleDrive: driveTest.success ? 'connected' : 'error',
+        driveFolder: driveTest.folderId || null
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Health check failed',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * GET /
+ * Basic info endpoint
+ */
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Smart Health Assistant Backend',
+    version: '1.0.0',
+    endpoints: [
+      'POST /api/upload-report - Upload medical reports',
+      'GET /api/health - Health check'
+    ],
+    security: 'Google Drive API credentials secured on backend only'
+  });
+});
+
+// ==========================================
+// ERROR HANDLING
+// ==========================================
+
+// Global error handler
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        error: 'File too large. Maximum size is 10MB.'
+      });
+    }
+  }
+
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error'
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found'
+  });
+});
+
+// ==========================================
+// SERVER STARTUP
+// ==========================================
+
+app.listen(PORT, () => {
+  console.log(`🚀 Smart Health Assistant Backend Server`);
+  console.log(`📡 Running on port ${PORT}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+  console.log(` Security: Service account credentials secured`);
+});
 

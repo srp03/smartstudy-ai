@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Config Test</title>
+</head>
+<body>
+    <h1>Configuration Test</h1>
+    <div id="output"></div>
+
+    <script src="js/secure-config.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        const output = document.getElementById('output');
+
+        try {
+            // Test if config is loaded
+            if (window.appConfig) {
+                output.innerHTML += '<p>✅ Config loaded successfully</p>';
+
+                // Test Firebase config
+                const firebaseConfig = window.appConfig.getFirebaseConfig();
+                if (firebaseConfig && firebaseConfig.apiKey) {
+                    output.innerHTML += '<p>✅ Firebase config loaded: ' + firebaseConfig.projectId + '</p>';
+                } else {
+                    output.innerHTML += '<p>❌ Firebase config missing</p>';
+                }
+
+                // Test Gemini API key
+                const geminiKey = window.appConfig.get('GEMINI_API_KEY');
+                if (geminiKey) {
+                    output.innerHTML += '<p>✅ Gemini API key loaded</p>';
+                } else {
+                    output.innerHTML += '<p>❌ Gemini API key missing</p>';
+                }
+            } else {
+                output.innerHTML += '<p>❌ Config not loaded</p>';
+            }
+        } catch (error) {
+            output.innerHTML += '<p>❌ Error: ' + error.message + '</p>';
+        }
+    </script>
+</body>
+</html>

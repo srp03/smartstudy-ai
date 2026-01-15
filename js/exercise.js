@@ -4,12 +4,12 @@
  * Now uses Google Gemini API for enhanced exercise plan generation
  */
 
-// Load secure configuration
-if (typeof window.secureConfig === 'undefined') {
-  console.error('Secure config not found. Make sure secure-config.js is loaded before exercise.js');
+// Load centralized configuration
+if (typeof window.appConfig === 'undefined') {
+  console.error('App config not found. Make sure config.js is loaded before exercise.js');
 }
 
-const GEMINI_API_KEY = window.secureConfig.GEMINI_API_KEY;
+const GEMINI_API_KEY = window.appConfig.get('GEMINI_API_KEY');
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 const exerciseDatabase = {

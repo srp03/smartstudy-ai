@@ -7,12 +7,13 @@
  * Functions return { success: boolean, data?, error? }.
  */
 
-// Load secure configuration
-if (typeof window.secureConfig === 'undefined') {
-  console.error('Secure config not found. Make sure secure-config.js is loaded before reports.js');
+// Load centralized configuration
+if (typeof window.appConfig === 'undefined') {
+  console.error('App config not found. Make sure config.js is loaded before reports.js');
 }
 
-const GEMINI_API_KEY = window.secureConfig.GEMINI_API_KEY;
+const GEMINI_API_KEY = window.appConfig.get('GEMINI_API_KEY');
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 function _getStorageDbAuth() {
@@ -30,12 +31,13 @@ function _getStorageDbAuth() {
 
 /**
  * uploadMedicalReport(file, name, type, date)
- * - Uploads `file` (File object) to Storage under `reports/{uid}/...` and stores metadata in Firestore.
- * - Now includes AI analysis using Gemini API for medical report insights.
+ * - Uploads `file` (File object) to Google Drive via backend API and stores metadata in Firestore.
+ * - Includes AI analysis using Gemini API for medical report insights.
+ * - Maintains security: Drive credentials never exposed to frontend.
  */
 async function uploadMedicalReport(file, name, type, date) {
   try {
-    const { storage, db, auth } = _getStorageDbAuth();
+    const { db, auth } = _getStorageDbAuth();
     const user = auth.currentUser;
     if (!user) return { success: false, error: 'No authenticated user.' };
 
@@ -44,13 +46,30 @@ async function uploadMedicalReport(file, name, type, date) {
     if (!validTypes.includes(file.type)) return { success: false, error: 'Invalid file type. Only PDF and images are supported.' };
     if (file.size > 10 * 1024 * 1024) return { success: false, error: 'File exceeds 10MB limit.' };
 
-    const timestamp = Date.now();
-    const safeName = (name || file.name || 'report').replace(/[^a-zA-Z0-9._-]/g, '_');
-    const storagePath = `reports/${user.uid}/${timestamp}_${safeName}`;
+    console.log('📤 Uploading to Google Drive backend...');
 
-    const storageRef = storage.ref().child(storagePath);
-    const snapshot = await storageRef.put(file);
-    const downloadURL = await snapshot.ref.getDownloadURL();
+    // Create FormData for backend upload
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Upload to backend Google Drive API
+    const backendResponse = await fetch('http://localhost:3000/api/upload-report', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!backendResponse.ok) {
+      const errorData = await backendResponse.json();
+      throw new Error(errorData.error || 'Upload failed');
+    }
+
+    const uploadResult = await backendResponse.json();
+
+    if (!uploadResult.success) {
+      throw new Error(uploadResult.error || 'Upload failed');
+    }
+
+    console.log('✅ File uploaded to Google Drive successfully');
 
     // Perform AI analysis using Gemini API
     let aiAnalysis = null;
@@ -65,15 +84,29 @@ async function uploadMedicalReport(file, name, type, date) {
       };
     }
 
+    // Store metadata in Firestore (Drive URLs are safe to store)
     const meta = {
       fileName: name || file.name,
       fileType: type || file.type || null,
       reportDate: date || null,
-      storagePath,
-      downloadURL,
+      driveFileId: uploadResult.data.fileId,
+      downloadURL: uploadResult.data.downloadURL,
+      viewURL: uploadResult.data.viewURL,
       aiAnalysis,
       uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
+
+    // Save metadata to Firestore
+    await db.collection('users').doc(user.uid).collection('reports').add(meta);
+
+    console.log('✅ Metadata saved to Firestore successfully');
+
+    return { success: true, data: meta };
+
+  } catch (err) {
+    console.error('uploadMedicalReport error:', err);
+    return { success: false, error: (err && err.message) || String(err) };
+  }
 
 /**
  * analyzeMedicalReport(file, name, type)

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Firebase Connection Test</h1>
+    <div id="output"></div>
+
+    <script src="js/secure-config.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        const output = document.getElementById('output');
+
+        try {
+            // Test Firebase initialization
+            const firebaseConfig = window.appConfig.getFirebaseConfig();
+            output.innerHTML += '<p>Firebase config loaded: ' + firebaseConfig.projectId + '</p>';
+
+            // Initialize Firebase
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                output.innerHTML += '<p>✅ Firebase initialized successfully</p>';
+            }
+
+            // Test auth
+            const auth = firebase.auth();
+            output.innerHTML += '<p>✅ Firebase Auth accessible</p>';
+
+            // Test if email/password provider is enabled
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    output.innerHTML += '<p>✅ User logged in: ' + user.email + '</p>';
+                } else {
+                    output.innerHTML += '<p>ℹ️  No user logged in</p>';
+                }
+            });
+
+        } catch (error) {
+            output.innerHTML += '<p>❌ Error: ' + error.message + '</p>';
+            console.error('Firebase test error:', error);
+        }
+    </script>
+</body>
+</html>

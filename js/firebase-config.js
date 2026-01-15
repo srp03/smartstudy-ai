@@ -4,14 +4,14 @@
 // Keep this file compat-style (global `firebase`) so pages that include
 // the CDN scripts can initialize the app without bundling or ESM imports.
 
-// Load secure configuration (must be included before this script)
-if (typeof window.secureConfig === 'undefined') {
-  console.error('Secure config not found. Make sure secure-config.js is loaded before firebase-config.js');
-  throw new Error('Secure configuration required');
+// Load centralized configuration (must be included before this script)
+if (typeof window.appConfig === 'undefined') {
+  console.error('App config not found. Make sure config.js is loaded before firebase-config.js');
+  throw new Error('Application configuration required');
 }
 
 // Your Firebase config
-const firebaseConfig = window.secureConfig.FIREBASE_CONFIG;
+const firebaseConfig = window.appConfig.getFirebaseConfig();
 
 // Initialize Firebase using the global `firebase` (compat) object.
 // If Firebase CDN scripts are not included on the page, this will throw
