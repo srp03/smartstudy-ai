@@ -1,0 +1,12 @@
+{
+  "name": "health1",
+  "version": "1.0.0",
+  "description": "A fully functional health management web application built with modern web technologies, featuring AI-powered diet and exercise recommendations, health profile management, and secure medical report storage.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

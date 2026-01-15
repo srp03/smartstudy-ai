@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Health Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase (compat CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="dashboard.html" class="text-2xl font-bold text-blue-600">🏥 Smart Health Assistant</a>
+                <div class="space-x-4">
+                    <a href="exercise.html" class="text-gray-700 hover:text-blue-600 transition">Exercise</a>
+                    <a href="reports.html" class="text-gray-700 hover:text-blue-600 transition">Reports</a>
+                    <button id="logout-btn" class="text-red-600 hover:text-red-700 transition">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-gray-800">Dashboard</h1>
+
+        <!-- Health Summary -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 fade-in">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Health Summary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <p class="text-gray-600 mb-1">BMI</p>
+                    <p class="text-2xl font-bold text-blue-600" id="bmi-value">-</p>
+                    <p class="text-sm text-gray-600" id="bmi-status">-</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <p class="text-gray-600 mb-1">Blood Pressure</p>
+                    <p class="text-2xl font-bold text-green-600" id="bp-value">-</p>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <p class="text-gray-600 mb-1">Blood Sugar</p>
+                    <p class="text-2xl font-bold text-yellow-600" id="sugar-value">-</p>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <p class="text-gray-600 mb-1">Activity Level</p>
+                    <p class="text-2xl font-bold text-purple-600" id="activity-value">-</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="profile.html" class="text-blue-600 hover:underline">Update Profile</a>
+            </div>
+        </div>
+
+        <!-- AI Diet Plans -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 fade-in">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">AI-Generated Diet Plans</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button onclick="handleGenerateDietPlan('weight-loss-veg')" 
+                        class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg hover:from-green-600 hover:to-green-700 transition card-hover">
+                    <div class="text-3xl mb-2">🥗</div>
+                    <h3 class="text-xl font-semibold mb-2">Weight Loss (Veg)</h3>
+                    <p class="text-sm opacity-90">7-day vegetarian diet plan</p>
+                </button>
+
+                <button onclick="handleGenerateDietPlan('weight-loss-nonveg')" 
+                        class="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-lg hover:from-red-600 hover:to-red-700 transition card-hover">
+                    <div class="text-3xl mb-2">🍖</div>
+                    <h3 class="text-xl font-semibold mb-2">Weight Loss (Non-Veg)</h3>
+                    <p class="text-sm opacity-90">7-day non-vegetarian diet plan</p>
+                </button>
+
+                <button onclick="handleGenerateDietPlan('weight-gain')" 
+                        class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-lg hover:from-orange-600 hover:to-orange-700 transition card-hover">
+                    <div class="text-3xl mb-2">💪</div>
+                    <h3 class="text-xl font-semibold mb-2">Weight Gain</h3>
+                    <p class="text-sm opacity-90">7-day weight gain diet plan</p>
+                </button>
+
+                <button onclick="handleGenerateDietPlan('maintain-weight')" 
+                        class="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 rounded-lg hover:from-teal-600 hover:to-teal-700 transition card-hover">
+                    <div class="text-3xl mb-2">⚖️</div>
+                    <h3 class="text-xl font-semibold mb-2">Maintain Weight</h3>
+                    <p class="text-sm opacity-90">Balanced maintenance diet plan</p>
+                </button>
+
+                <button onclick="handleGenerateDietPlan('bp-patient')" 
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transition card-hover">
+                    <div class="text-3xl mb-2">🩺</div>
+                    <h3 class="text-xl font-semibold mb-2">BP Patient Diet</h3>
+                    <p class="text-sm opacity-90">Low-sodium diet plan</p>
+                </button>
+
+                <button onclick="handleGenerateDietPlan('sugar-patient')" 
+                        class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg hover:from-purple-600 hover:to-purple-700 transition card-hover">
+                    <div class="text-3xl mb-2">🍯</div>
+                    <h3 class="text-xl font-semibold mb-2">Sugar Patient Diet</h3>
+                    <p class="text-sm opacity-90">Diabetic-friendly meal plan</p>
+                </button>
+
+                <button onclick="showCustomDietModal()" 
+                        class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-6 rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition card-hover">
+                    <div class="text-3xl mb-2">✨</div>
+                    <h3 class="text-xl font-semibold mb-2">Custom Diet Plan</h3>
+                    <p class="text-sm opacity-90">Personalized for your needs</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Diet Plan Display Area -->
+        <div id="diet-plan-display" class="hidden bg-white rounded-lg shadow-lg p-6 mb-8 fade-in">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-semibold text-gray-800">Your Diet Plan</h2>
+                <div class="space-x-2">
+                    <button onclick="exportDietPDF()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Export PDF</button>
+                    <button onclick="exportDietText()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Export Text</button>
+                    <button onclick="closeDietPlan()" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition">Close</button>
+                </div>
+            </div>
+            <div id="diet-plan-content" class="prose max-w-none whitespace-pre-wrap text-gray-700"></div>
+        </div>
+    </main>
+
+    <!-- Custom Diet Modal -->
+    <div id="custom-diet-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-semibold mb-4">Custom Diet Plan</h3>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Disease or Health Issue</label>
+                <input type="text" id="custom-disease" placeholder="e.g., PCOS, Thyroid, etc."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="flex gap-4">
+                <button onclick="generateCustomDiet()" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Generate</button>
+                <button onclick="closeCustomDietModal()" class="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/secure-config.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.custom-cursor-dot');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            cursorDot.style.left = e.clientX - 3 + 'px';
+            cursorDot.style.top = e.clientY - 3 + 'px';
+        });
+
+        // Auth check
+        checkAuth().then(user => {
+            if (!user) window.location.href = 'login.html';
+            else loadDashboard();
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await logoutUser();
+            window.location.href = 'index.html';
+        });
+
+        // Diet plan handlers
+        let currentDietPlan = '';
+
+        async function handleGenerateDietPlan(dietType) {
+            const displayArea = document.getElementById('diet-plan-display');
+            const contentArea = document.getElementById('diet-plan-content');
+            
+            displayArea.classList.remove('hidden');
+            contentArea.innerHTML = '<div class="spinner mx-auto"></div><p class="text-center mt-4">Generating your personalized diet plan...</p>';
+            
+            const result = await generateDietPlan(dietType);
+            if (result.success) {
+                currentDietPlan = result.plan;
+                contentArea.textContent = result.plan;
+                if (result.isSample) contentArea.innerHTML += '<p class="text-sm text-gray-500 mt-4">* Sample data for demo purposes</p>';
+            } else {
+                contentArea.innerHTML = `<p class="text-red-600">Error: ${result.error}</p>`;
+            }
+        }
+
+        function showCustomDietModal() { document.getElementById('custom-diet-modal').classList.remove('hidden'); }
+        function closeCustomDietModal() { document.getElementById('custom-diet-modal').classList.add('hidden'); }
+
+        async function generateCustomDiet() {
+            const disease = document.getElementById('custom-disease').value;
+            if (!disease.trim()) { alert('Please enter a disease or health issue'); return; }
+
+            closeCustomDietModal();
+            const displayArea = document.getElementById('diet-plan-display');
+            const contentArea = document.getElementById('diet-plan-content');
+
+            displayArea.classList.remove('hidden');
+            contentArea.innerHTML = '<div class="spinner mx-auto"></div><p class="text-center mt-4">Generating your personalized diet plan...</p>';
+
+            const result = await generateDietPlan('custom', { disease });
+            if (result.success) {
+                currentDietPlan = result.plan;
+                contentArea.textContent = result.plan;
+                if (result.isSample) contentArea.innerHTML += '<p class="text-sm text-gray-500 mt-4">* Sample data for demo purposes</p>';
+            } else {
+                contentArea.innerHTML = `<p class="text-red-600">Error: ${result.error}</p>`;
+            }
+        }
+
+        function closeDietPlan() { document.getElementById('diet-plan-display').classList.add('hidden'); currentDietPlan = ''; }
+        function exportDietPDF() { if (currentDietPlan) exportDietPlanToPDF(currentDietPlan); }
+        function exportDietText() { if (currentDietPlan) exportDietPlanToText(currentDietPlan); }
+    </script>
+</body>
+</html>
