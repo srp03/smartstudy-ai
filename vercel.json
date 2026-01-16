@@ -1,6 +1,7 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "buildCommand": "npm install",
   "outputDirectory": "./",
   "functions": {
     "api/**/*.js": {
