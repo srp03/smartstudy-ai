@@ -3,20 +3,8 @@
   "cleanUrls": true,
   "functions": {
     "api/**/*.js": {
-      "maxDuration": 60,
-      "memory": 1024
-    },
-    "api/reports/upload.js": {
       "maxDuration": 120,
       "memory": 2048
-    },
-    "api/reports/[reportId]/analyze.js": {
-      "maxDuration": 120,
-      "memory": 2048
-    },
-    "api/reports/[reportId]/generate-explanation.js": {
-      "maxDuration": 60,
-      "memory": 1024
     }
   },
   "rewrites": [
