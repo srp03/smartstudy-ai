@@ -1,36 +1,9 @@
 /**
  * Custom Styles and Animations
- * Tailwind CSS customizations and custom cursor animation
+ * Tailwind CSS customizations and animations
  */
 
-/* Custom Cursor Animation */
-* {
-  cursor: none;
-}
-
-.custom-cursor {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #3b82f6;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.1s ease;
-  mix-blend-mode: difference;
-}
-
-.custom-cursor-dot {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background-color: #3b82f6;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.05s ease;
-  mix-blend-mode: difference;
-}
+/* Custom cursor removed - using default browser cursor to prevent flickering */
 
 /* Smooth scrolling */
 html {
@@ -43,6 +16,7 @@ html {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -64,88 +38,297 @@ html {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Button hover effects */
 .btn-primary {
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Card hover effects */
-.card-hover {
-  transition: all 0.3s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-}
-
-/* Gradient backgrounds */
-.gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-bg-health {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-/* Input focus styles */
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
-}
-
-/* Enhanced button styles for exercise and diet plans */
-.exercise-btn, .exercise-plan-btn {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 
-.exercise-btn::before, .exercise-plan-btn::before {
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Card hover effects - Enhanced for Hackathon */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Premium Floating Card Style */
+.floating-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.floating-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* AI Smart Card with Glowing Border */
+.ai-smart-card {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+  /* Light blue outer glow */
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.ai-smart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4, #3b82f6);
+  background-size: 200% 100%;
+  animation: border-flow 2s linear infinite;
+}
+
+@keyframes border-flow {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Hero Pulse Animation */
+@keyframes hero-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.hero-btn-pulse {
+  animation: hero-pulse 2s infinite;
+}
+
+/* Glassmorphism Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Typewriter Effect Container */
+.typewriter-text {
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;
+}
+
+/* Role Selection Hero Cards */
+.role-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.role-card:hover {
+  transform: scale(1.05);
+  border-color: #3b82f6;
+  box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+}
+
+.role-card.selected {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+  transform: scale(1.05);
+}
+
+/* Role Specific Colors */
+.role-card.selected[data-role="patient"] {
+  border-color: #1e3a8a;
+  /* Deep Navy */
+  background-color: #e0e7ff;
+}
+
+.role-card.selected[data-role="doctor"] {
+  border-color: #059669;
+  /* Emerald */
+  background-color: #d1fae5;
+}
+
+
+/* AI Loading Pulse */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.ai-thinking::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Staggered Animation for Lists */
+.stagger-item {
+  opacity: 0;
+  animation: slideUpFade 0.5s ease forwards;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Hospital Portal Action Cards */
+.portal-action-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.portal-action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.portal-action-card:active {
+  transform: translateY(-4px);
+}
+
+/* Professional Hospital Header */
+.hospital-header {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Command Center Cards */
+.command-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.command-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
   transition: left 0.5s;
 }
 
-.exercise-btn:hover::before, .exercise-plan-btn:hover::before {
+.command-card:hover::before {
   left: 100%;
 }
 
-.exercise-btn:active, .exercise-plan-btn:active {
-  transform: scale(0.98);
+.command-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 30px rgba(59, 130, 246, 0.2);
 }
 
-/* AI analysis sections */
-.ai-analysis-section {
-  border-left: 4px solid #3b82f6;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+.command-card:active {
+  transform: translateY(-5px) scale(1.01);
 }
 
-/* Loading animation for AI analysis */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+/* Content Section Transitions */
+.content-section {
+  animation: fadeInSection 0.4s ease-out;
+}
+
+@keyframes fadeInSection {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  50% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.ai-loading {
-  animation: pulse-glow 2s infinite;
+/* Clinical Summary Card (for AI output) */
+.clinical-summary {
+  background: white;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+  position: relative;
+}
+
+.clinical-summary::before {
+  content: '🏥 Clinical Summary';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: white;
+  padding: 0 10px;
+  font-weight: bold;
+  color: #3b82f6;
+  font-size: 14px;
 }

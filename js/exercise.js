@@ -14,29 +14,29 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 
 const exerciseDatabase = {
   'bp': [
-    { name: 'Walking for Blood Pressure', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '30 min' },
-    { name: 'Yoga for Hypertension', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '20 min' },
-    { name: 'Low-Impact Cardio', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '25 min' }
+    { name: 'Walking for Blood Pressure', link: 'https://www.youtube.com/watch?v=1Eo7JdMTPdQ', duration: '30 min' },
+    { name: 'Yoga for Hypertension', link: 'https://www.youtube.com/watch?v=4pKly2JojMw', duration: '20 min' },
+    { name: 'Low-Impact Cardio', link: 'https://www.youtube.com/watch?v=ml6cT4AZdqI', duration: '25 min' }
   ],
   'sugar': [
-    { name: 'Diabetes-Friendly Workout', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '30 min' },
-    { name: 'Resistance Training for Diabetics', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '20 min' },
-    { name: 'Aerobic Exercise for Blood Sugar', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '25 min' }
+    { name: 'Diabetes-Friendly Workout', link: 'https://www.youtube.com/watch?v=0qanF-91aJo', duration: '30 min' },
+    { name: 'Resistance Training for Diabetics', link: 'https://www.youtube.com/watch?v=6FoYp4WJ7kE', duration: '20 min' },
+    { name: 'Aerobic Exercise for Blood Sugar', link: 'https://www.youtube.com/watch?v=ml6cT4AZdqI', duration: '25 min' }
   ],
   'low-activity': [
-    { name: 'Beginner Full Body Workout', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '20 min' },
-    { name: 'Gentle Stretching Routine', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '15 min' },
-    { name: 'Chair Exercises', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '15 min' }
+    { name: 'Beginner Full Body Workout', link: 'https://www.youtube.com/watch?v=UBMk30rjy0o', duration: '20 min' },
+    { name: 'Gentle Stretching Routine', link: 'https://www.youtube.com/watch?v=4pKly2JojMw', duration: '15 min' },
+    { name: 'Chair Exercises', link: 'https://www.youtube.com/watch?v=0qanF-91aJo', duration: '15 min' }
   ],
   'moderate-activity': [
-    { name: 'Intermediate Cardio Workout', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '30 min' },
-    { name: 'Strength Training Basics', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '25 min' },
-    { name: 'HIIT for Beginners', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '20 min' }
+    { name: 'Intermediate Cardio Workout', link: 'https://www.youtube.com/watch?v=ml6cT4AZdqI', duration: '30 min' },
+    { name: 'Strength Training Basics', link: 'https://www.youtube.com/watch?v=6FoYp4WJ7kE', duration: '25 min' },
+    { name: 'HIIT for Beginners', link: 'https://www.youtube.com/watch?v=UBMk30rjy0o', duration: '20 min' }
   ],
   'high-activity': [
-    { name: 'Advanced HIIT Workout', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '30 min' },
-    { name: 'Full Body Strength Training', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '40 min' },
-    { name: 'Cardio Endurance Training', link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duration: '45 min' }
+    { name: 'Advanced HIIT Workout', link: 'https://www.youtube.com/watch?v=ml6cT4AZdqI', duration: '30 min' },
+    { name: 'Full Body Strength Training', link: 'https://www.youtube.com/watch?v=6FoYp4WJ7kE', duration: '40 min' },
+    { name: 'Cardio Endurance Training', link: 'https://www.youtube.com/watch?v=UBMk30rjy0o', duration: '45 min' }
   ]
 };
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
     <!-- Custom Cursor -->
@@ -29,48 +31,88 @@
     <main class="container mx-auto px-4 py-12 max-w-md">
         <div class="bg-white rounded-lg shadow-lg p-8 fade-in">
             <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Create Account</h2>
-            
+
             <form id="registerForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Username</label>
                     <input type="text" id="username" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Email</label>
                     <input type="email" id="email" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Password</label>
                     <input type="password" id="password" required minlength="6"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Age</label>
-                    <input type="number" id="age" required min="1" max="150"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Gender</label>
                     <select id="gender" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Age</label>
+                    <input type="number" id="age" required min="1" max="150"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-4 text-center text-lg">I am a...</label>
+                    <input type="hidden" id="role" required>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Patient Role Card -->
+                        <div class="role-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center space-y-3"
+                            data-role="patient" onclick="selectRole('patient', this)">
+                            <div
+                                class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl">
+                                👤</div>
+                            <span class="font-bold text-gray-700">Patient</span>
+                        </div>
+
+                        <!-- Doctor Role Card -->
+                        <div class="role-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center space-y-3"
+                            data-role="doctor" onclick="selectRole('doctor', this)">
+                            <div
+                                class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl">
+                                🩺</div>
+                            <span class="font-bold text-gray-700">Doctor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function selectRole(roleValue, element) {
+                        // Set hidden input
+                        document.getElementById('role').value = roleValue;
+
+                        // Remove selected class from all cards
+                        document.querySelectorAll('.role-card').forEach(card => {
+                            card.classList.remove('selected', 'ring-2', 'ring-blue-500');
+                        });
+
+                        // Add selected class to clicked card
+                        element.classList.add('selected', 'ring-2', 'ring-blue-500');
+                    }
+                </script>
 
                 <div id="error-message" class="text-red-600 text-sm hidden"></div>
                 <div id="success-message" class="text-green-600 text-sm hidden"></div>
 
-                <button type="submit" 
-                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
                     Register
                 </button>
             </form>
@@ -100,26 +142,33 @@
         // Registration form handler
         document.getElementById('registerForm').addEventListener('submit', async e => {
             e.preventDefault();
-            
+
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
             const age = parseInt(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
+            const role = document.getElementById('role').value;
 
             const errorDiv = document.getElementById('error-message');
             const successDiv = document.getElementById('success-message');
-            
+
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
 
             // Call Firebase / backend registration function
-            const result = await registerUser(email, password, username, age, gender);
+            const result = await registerUser(email, password, username, age, gender, role);
 
             if (result.success) {
                 successDiv.textContent = 'Registration successful! Redirecting...';
                 successDiv.classList.remove('hidden');
-                setTimeout(() => window.location.href = 'profile.html', 1500);
+                setTimeout(() => {
+                    if (role === 'doctor') {
+                        window.location.href = 'doctor-dashboard.html';
+                    } else {
+                        window.location.href = 'profile.html';
+                    }
+                }, 1500);
             } else {
                 errorDiv.textContent = result.error || 'Registration failed. Please try again.';
                 errorDiv.classList.remove('hidden');
@@ -127,4 +176,5 @@
         });
     </script>
 </body>
+
 </html>

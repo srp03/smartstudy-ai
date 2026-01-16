@@ -84,8 +84,23 @@ async function getHealthProfile() {
   }
 }
 
+async function isProfileComplete() {
+  try {
+    const profileResult = await getHealthProfile();
+    if (!profileResult.success) return false;
+    const profile = profileResult.data;
+    // Check required fields for completion
+    return !!(profile.height && profile.weight && profile.age && profile.activityLevel);
+  } catch (err) {
+    console.error('isProfileComplete error:', err);
+    return false;
+  }
+}
+
 // Expose globally for HTML
 window.validateHealthProfile = validateHealthProfile;
 window.saveHealthProfile = saveHealthProfile;
 window.getHealthProfile = getHealthProfile;
 window.calculateBMI = calculateBMI;
+window.isProfileComplete = isProfileComplete;
+window._getDbAndAuth = _getDbAndAuth;

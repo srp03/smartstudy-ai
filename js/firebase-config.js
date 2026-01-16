@@ -26,5 +26,5 @@ if (typeof firebase === 'undefined') {
   // Expose commonly used instances on `window` for other non-module scripts
   window.firebaseAuth = firebase.auth();
   window.firebaseDb = firebase.firestore();
-  window.firebaseStorage = firebase.storage();
+  // Note: Firebase Storage removed - using Supabase Storage instead
 }

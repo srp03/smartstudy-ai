@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
     <!-- Custom Cursor -->
@@ -21,7 +23,8 @@
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">🏥 Smart Health Assistant</a>
-            <a href="register.html" class="text-gray-700 hover:text-blue-600 transition">Don't have an account? Register</a>
+            <a href="register.html" class="text-gray-700 hover:text-blue-600 transition">Don't have an account?
+                Register</a>
         </div>
     </nav>
 
@@ -29,25 +32,25 @@
     <main class="container mx-auto px-4 py-12 max-w-md">
         <div class="bg-white rounded-lg shadow-lg p-8 fade-in">
             <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Login</h2>
-            
+
             <form id="loginForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Email</label>
                     <input type="email" id="email" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Password</label>
                     <input type="password" id="password" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div id="error-message" class="text-red-600 text-sm hidden"></div>
                 <div id="success-message" class="text-green-600 text-sm hidden"></div>
 
-                <button type="submit" 
-                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
                     Login
                 </button>
             </form>
@@ -63,6 +66,8 @@
     <script src="js/config.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/auth-guard.js"></script>
     <script>
         // Custom cursor
         const cursor = document.querySelector('.custom-cursor');
@@ -74,29 +79,25 @@
             cursorDot.style.top = e.clientY - 3 + 'px';
         });
 
-        // Check if already logged in
-        checkAuth().then(user => {
-            if (user) window.location.href = 'dashboard.html';
-        });
-
         // Login form handler
         document.getElementById('loginForm').addEventListener('submit', async e => {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('error-message');
             const successDiv = document.getElementById('success-message');
-            
+
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
-            
+
             const result = await loginUser(email, password);
-            
+
             if (result.success) {
                 successDiv.textContent = 'Login successful! Redirecting...';
                 successDiv.classList.remove('hidden');
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                // Use auth guard for proper redirect handling
+                window.location.href = 'dashboard.html'; // Redirect to Central Dashboard Hub
             } else {
                 errorDiv.textContent = result.error || 'Login failed. Please check your credentials.';
                 errorDiv.classList.remove('hidden');
@@ -104,4 +105,5 @@
         });
     </script>
 </body>
+
 </html>

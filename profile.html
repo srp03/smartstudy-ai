@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
     <!-- Custom Cursor -->
@@ -32,33 +34,34 @@
     <main class="container mx-auto px-4 py-12 max-w-2xl">
         <div class="bg-white rounded-lg shadow-lg p-8 fade-in">
             <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Health Profile</h2>
-            <p class="text-center text-gray-600 mb-6">Fill in your health information to get personalized recommendations</p>
-            
+            <p class="text-center text-gray-600 mb-6">Fill in your health information to get personalized
+                recommendations</p>
+
             <form id="profileForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2">Height (cm)</label>
                         <input type="number" id="height" required min="50" max="250" step="0.1"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
 
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2">Weight (kg)</label>
                         <input type="number" id="weight" required min="20" max="300" step="0.1"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Age</label>
                     <input type="number" id="age" required min="1" max="150"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Blood Group</label>
                     <select id="bloodGroup" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Select Blood Group</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
@@ -73,22 +76,20 @@
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Blood Pressure (e.g., 120/80)</label>
-                    <input type="text" id="bloodPressure" pattern="\d{2,3}/\d{2,3}"
-                           placeholder="120/80"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" id="bloodPressure" pattern="\d{2,3}/\d{2,3}" placeholder="120/80"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Blood Sugar (mg/dL)</label>
-                    <input type="number" id="bloodSugar" min="50" max="500"
-                           placeholder="Optional"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="number" id="bloodSugar" min="50" max="500" placeholder="Optional"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Activity Level</label>
                     <select id="activityLevel" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Select Activity Level</option>
                         <option value="low">Low (Sedentary)</option>
                         <option value="moderate">Moderate (Light exercise 1-3 days/week)</option>
@@ -99,7 +100,7 @@
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">General Lifestyle</label>
                     <textarea id="lifestyle" rows="3" placeholder="Describe your lifestyle, habits, etc."
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
                 </div>
 
                 <div id="bmi-display" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -111,8 +112,8 @@
                 <div id="error-message" class="text-red-600 text-sm hidden"></div>
                 <div id="success-message" class="text-green-600 text-sm hidden"></div>
 
-                <button type="submit" 
-                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition btn-primary">
                     Save Health Profile
                 </button>
             </form>
@@ -125,6 +126,7 @@
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/auth-guard.js"></script>
     <script>
         // Custom cursor
         const cursor = document.querySelector('.custom-cursor');
@@ -136,10 +138,9 @@
             cursorDot.style.top = e.clientY - 3 + 'px';
         });
 
-        // Check authentication
-        checkAuth().then(user => {
-            if (!user) window.location.href = 'login.html';
-            else loadExistingProfile();
+        // Initialize profile page
+        window.authGuard.requireAuth((user) => {
+            loadExistingProfile();
         });
 
         async function loadExistingProfile() {
@@ -195,9 +196,9 @@
                 document.getElementById('bmi-status').textContent = result.bmi.status;
                 document.getElementById('bmi-display').classList.remove('hidden');
 
-                successDiv.textContent = 'Profile saved successfully! Redirecting to dashboard...';
+                successDiv.textContent = 'Profile saved successfully! Redirecting to medical reports...';
                 successDiv.classList.remove('hidden');
-                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                setTimeout(() => window.location.href = 'reports.html', 2000);
             } else {
                 errorDiv.textContent = result.error || 'Failed to save profile. Please try again.';
                 errorDiv.classList.remove('hidden');
@@ -205,4 +206,5 @@
         });
     </script>
 </body>
+
 </html>

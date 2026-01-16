@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Smart Health Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="doctor-dashboard.html" class="text-2xl font-bold text-blue-600">🏥 Doctor Dashboard</a>
+            <div class="space-x-4 flex items-center">
+                <span id="doctor-name" class="text-gray-700"></span>
+                <button onclick="handleLogout()" class="text-red-600 hover:text-red-700 transition">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-gray-800">Doctor Dashboard</h1>
+
+        <!-- Today's Appointments -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 fade-in">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Today's Appointments</h2>
+            <div id="appointments-list">
+                <!-- Appointments will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Patient Details Modal -->
+        <div id="patient-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-gray-800">Patient Details</h3>
+                            <button onclick="closePatientModal()" class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="patient-details">
+                            <!-- Patient information will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/secure-config.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/doctor-dashboard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.custom-cursor-dot');
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            cursorDot.style.left = e.clientX - 3 + 'px';
+            cursorDot.style.top = e.clientY - 3 + 'px';
+        });
+
+        // Initialize dashboard
+        // Initialize dashboard
+        window.authGuard.requireAuth(async (user) => {
+            loadDoctorDashboard();
+        });
+
+        // Logout handler
+        async function handleLogout() {
+            sessionStorage.clear();
+            await logoutUser();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>
