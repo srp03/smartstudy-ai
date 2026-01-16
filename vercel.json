@@ -8,11 +8,11 @@
     },
     "api/reports/upload.js": {
       "maxDuration": 120,
-      "memory": 3008
+      "memory": 2048
     },
     "api/reports/[reportId]/analyze.js": {
       "maxDuration": 120,
-      "memory": 3008
+      "memory": 2048
     },
     "api/reports/[reportId]/generate-explanation.js": {
       "maxDuration": 60,
@@ -45,4 +45,4 @@
       ]
     }
   ]
-}bash git add vercel.json git commit -m "fix: corrected vercel syntax" git push origin main
+}

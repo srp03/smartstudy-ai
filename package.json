@@ -6,7 +6,7 @@
   "main": "api/index.js",
   "type": "module",
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "vercel dev",
