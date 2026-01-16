@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "public": "public",
+  "env": [
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_CLIENT_EMAIL",
+    "SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "GEMINI_API_KEY",
+    "NODE_ENV"
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/reports/upload.js": {
+      "maxDuration": 120,
+      "memory": 3008
+    },
+    "api/reports/[reportId]/analyze.js": {
+      "maxDuration": 120,
+      "memory": 3008
+    },
+    "api/reports/[reportId]/generate-explanation.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
+  "redirects": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
+}
